@@ -1,6 +1,7 @@
 :root {
   --bg-color: #050508;
   --text-color: #ffffff;
+  --accent-color: rgba(255, 255, 255, 0.6);
   --font-mono: "Courier New", Courier, monospace;
 }
 
@@ -12,6 +13,10 @@
 
 body {
   background-color: var(--bg-color);
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(20, 20, 35, 1) 0%, rgba(5, 5, 8, 1) 100%),
+    url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+  background-blend-mode: overlay;
   color: var(--text-color);
   display: flex;
   justify-content: center;
@@ -19,54 +24,98 @@ body {
   min-height: 100vh;
   font-family: var(--font-mono);
   text-transform: lowercase;
-  overflow: hidden;
-}
-
-#network {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
+  overflow-x: hidden;
 }
 
 .container {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   text-align: left;
   padding: 2rem;
+  animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .name {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 5vw, 1.2rem);
   font-weight: normal;
-  margin-bottom: 2rem;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
 }
 
 .links {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .link-item {
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 8vw, 1.8rem);
   text-decoration: none;
   color: var(--text-color);
-  display: block;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
-  transition: text-shadow 0.2s;
+  display: inline-block;
+  width: fit-content;
+  transition: all 0.3s ease;
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.link-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--accent-color);
+  transition: width 0.3s ease;
 }
 
 .link-item:hover {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  opacity: 0.7;
+}
+
+.link-item:hover::after {
+  width: 100%;
 }
 
 .link-item::before {
   content: "> ";
+  opacity: 0.5;
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .links {
+    gap: 1.5rem;
+    /* Larger gap for easier tapping */
+  }
+
+  .link-item {
+    padding: 0.5rem 0;
+    /* Larger hit area */
+  }
+}
+
+/* Fix for background when canvas is removed/hidden */
+#network {
+  display: none;
 }
